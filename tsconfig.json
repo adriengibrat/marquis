@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["es2020", "dom"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noEmitOnError": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017",
+    "paths": {
+      "hyperapp": ["types/hyperapp"],
+      "hyperlit": ["types/hyperlit"],
+    }
+  },
+  "exclude": ["dist", "node_modules", "types"],
+  "include": ["src/**/*"],
+}
