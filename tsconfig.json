@@ -13,9 +13,11 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "hyperapp": ["types/hyperapp"],
       "hyperlit": ["types/hyperlit"],
+      "hyperapp-styled-components": ["types/hyperapp-styled-components"],
     }
   },
   "exclude": ["dist", "node_modules", "types"],

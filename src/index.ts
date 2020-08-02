@@ -1,39 +1,56 @@
-import { app, PureAction, Component } from 'hyperapp';
+import { app, Action, Component } from 'hyperapp';
+import styled from 'hyperapp-styled-components';
 import html from 'hyperlit';
+import marked, { MarkedOptions } from 'marked';
+// import { extract } from 'oembed-parser';
+import createDOMPurify from 'dompurify';
 
-// import marked from 'marked';
-// import dompurify from 'dompurify';
-// import oembed from 'oembed-parser';
-
+const DOMPurify = createDOMPurify(window);
 
 interface DomEvent<T extends Element> extends Event {
     readonly target: T;
 }
 
 interface State {
-    readonly todos: string[];
-    readonly value: string;
+    readonly source: string;
+    readonly preview: string;
 }
 
-const setValue: PureAction<State, DomEvent<HTMLInputElement>> = (state, event) => ({ ...state, value: event.target.value });
-const addTodo: PureAction<State, Event> = (state: State, event: Event) => {
-    event.preventDefault();
-    return { ...state, todos: state.todos.concat(state.value), value: '' };
-};
+const setSource: Action<State, DomEvent<HTMLElement>> = (state, { target: { innerText: markdown }}) => [
+    { ...state, markdown },
+    [(dispatch, options: MarkedOptions) => marked(
+        markdown,
+        options,
+        (_error, html) => dispatch((state: State) => ({ ...state, preview: DOMPurify.sanitize(html) })),
+    ), {} as MarkedOptions],
+];
 
-const createTodo: Component<Pick<State, 'value'>> = ({ value }) => html`
-    <form>
-        <input type="text" oninput=${setValue} value=${value} />
-        <button onclick=${addTodo}>Add</button>
-    </form>
+const Wrapper = styled.div`
+  min-height: 500px;
+  border: 1px solid #aaa;
+  white-space: pre;
+`;
+
+const Editor: Component = (_, children) => html`
+    <${Wrapper} oninput=${setSource} role="textbox" contenteditable="true" autocorrect="on" spellcheck="true" translate="no">
+        ${children}
+    <//>
 `;
 
 app<State>({
-    init: { todos: [], value: '' },
-    view: ({ todos, value }) => html`
+    init: {
+        source: `
+# title 1
+
+Lorem ipsum
+
+## title 2`,
+        preview: '',
+    },
+    view: ({ source, preview }) => html`
         <main>
-            <${createTodo} value=${value} />
-            <ul>${todos.map((todo: string, id: number) => html`<li key=${id}>${todo}</li>`)}</ul>
+            <${Editor}>${source}<//>
+            <article innerHTML=${preview}></article>
         </main>
     `,
     node: document.getElementById('app')!,
