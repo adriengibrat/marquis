@@ -9,7 +9,7 @@
   "author": "Adrien Gibrat <adrien.gibrat@gmail.com>",
   "license": "WTFPL",
   "dependencies": {
-    "dompurify": "^2.0.12",
+    "dompurify": "^2.0.17",
     "hyperapp": "^2.0.8",
     "hyperapp-styled-components": "^0.1.2",
     "hyperlit": "^0.3.5",
